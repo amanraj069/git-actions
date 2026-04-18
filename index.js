@@ -43,7 +43,7 @@ app.use("/api", apiRouter);
 app.get("/", (req, res) => {
   res.send(`
         <div style="font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto;">
-            <h1 style="color: #4a90e2;">Small API is Running</h1>
+            <h1 style="color: #4a90e2;">Small API V2 is Running</h1>
             <p>Welcome to your new Express API. Minimal, fast, and structured.</p>
             <div style="background: #f4f4f4; padding: 1rem; border-radius: 8px;">
                 <strong>Endpoints:</strong>
