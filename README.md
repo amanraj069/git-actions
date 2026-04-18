@@ -30,6 +30,27 @@ Stop and remove containers:
 docker compose down
 ```
 
+## GitHub Actions Deployment
+
+A workflow is available at `.github/workflows/deploy-docker.yml`.
+
+It can run on push to `main`/`master` or manually via `workflow_dispatch`.
+
+### Required repository secrets
+
+- `SSH_HOST` - target host to connect to
+- `SSH_USER` - SSH user for the target host
+- `SSH_PRIVATE_KEY` - private key for SSH authentication
+- `REMOTE_APP_PATH` - path to the cloned repo on the remote host
+- `DEPLOY_BRANCH` - branch to pull (optional, defaults to `main`)
+
+### What it does
+
+- checks out the repository
+- connects to the remote host
+- runs `git pull` in the target repo directory
+- restarts Docker Compose with `docker compose up -d --build`
+
 ## Endpoints
 
 - `GET /` - Root welcome page

@@ -1,0 +1,36 @@
+name: Deploy Git-Actions Docker App
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Pull repo and restart Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Pull latest repo and restart Docker Compose on remote host
+        env:
+          REMOTE_APP_PATH: ${{ secrets.REMOTE_APP_PATH }}
+          DEPLOY_BRANCH: ${{ secrets.DEPLOY_BRANCH }}
+        run: |
+          DEPLOY_BRANCH="${DEPLOY_BRANCH:-main}"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" <<'EOF'
+            set -e
+            cd "${REMOTE_APP_PATH}"
+            git pull origin "${DEPLOY_BRANCH}"
+            docker compose down || true
+            docker compose up -d --build
+          EOF
